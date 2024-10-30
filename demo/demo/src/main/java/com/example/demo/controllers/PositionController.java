@@ -11,7 +11,6 @@ import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
 
 
 
@@ -19,7 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/positions")
-@CrossOrigin
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class PositionController {
 
     @Autowired
@@ -58,6 +57,11 @@ public class PositionController {
         }
 
         return null;
+    }
+
+    @DeleteMapping("/{id}")
+    public void deletePosition(@PathVariable Long id){
+        this.positionRepository.deleteById(id);
     }
 
     

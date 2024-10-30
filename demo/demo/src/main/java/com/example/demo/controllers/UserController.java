@@ -1,5 +1,7 @@
 package com.example.demo.controllers;
+import com.example.demo.repositories.PositionRepository;
 import com.example.demo.repositories.UserRepository;
+import com.example.demo.entities.Position;
 import com.example.demo.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -17,11 +19,14 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/users")
-@CrossOrigin
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UserController {
       // Repositorio de usuarios que maneja la persistencia de los datos.
       @Autowired
       private UserRepository userRepository;
+
+      @Autowired
+      private PositionRepository positionRepository;
   
       /**
        * Obtiene todos los usuarios almacenados en la base de datos.
@@ -57,6 +62,14 @@ public class UserController {
      */
     @PostMapping("/")
     public User createUsuario(@RequestBody @Validated User usuario) {
+        Position position = positionRepository.findByPosition(usuario.getPosition());
+        if (position==null) {
+            position = new Position(usuario.getPosition());
+            positionRepository.save(position);
+        }
+
+        usuario.setPosition(position);
+
         return userRepository.save(usuario);
     }
 
@@ -69,8 +82,7 @@ public class UserController {
      */
     @PutMapping("/{id}")
     public User updateAllUsuario(@PathVariable Long id, @RequestBody @Validated User usuario) {
-        usuario.setId(id);
-        return userRepository.save(usuario);
+        return this.userRepository.save(usuario);
     }
 
     /**

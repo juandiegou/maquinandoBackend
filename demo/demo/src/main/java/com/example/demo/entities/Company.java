@@ -1,9 +1,12 @@
 package com.example.demo.entities;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 
@@ -15,6 +18,8 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @ManyToMany()
+    private List<User> employes;
 
     public Company(){}
 
@@ -37,5 +42,22 @@ public class Company {
         return this.name;
     }
 
+    public List<User> getEmployes() {
+        return employes;
+    }
+
+    public void setEmployes(List<User> employes) {
+        this.employes = employes;
+    }
+
+    public void addEmployee(User user) {
+        this.employes.add(user);
+        user.getCompanies().add(this);
+    }
+
+    public void removeEmployee(User user) {
+        this.employes.remove(user);
+        user.getCompanies().remove(this);
+    }
 
 }

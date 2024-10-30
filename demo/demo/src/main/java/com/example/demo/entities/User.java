@@ -5,6 +5,8 @@
 package com.example.demo.entities;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.CascadeType;
@@ -13,6 +15,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -36,11 +39,13 @@ public class User {
     private String cedula; 
     private String address; //dirección, 
     private BigDecimal salary; //salario, 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Position position; //cargo
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime creationDate = LocalDateTime.now(); //fecha de creación, 
+    @ManyToMany(mappedBy = "employes")
+    private List<Company> companies;
 
     public User(){}
 
@@ -115,7 +120,15 @@ public class User {
         return this.position.getPosition();
     }
 
-    public void setPosition(String position){
-        this.position = new Position(position); 
+    public void setPosition(Position position){
+        this.position = position; 
+    }
+
+    public List<Company> getCompanies() {
+        return companies;
+    }
+
+    public void setCompanies(List<Company> companies) {
+        this.companies = companies;
     }
 }
